@@ -41,6 +41,9 @@ export function useTvlData() {
   const totals: TvlTotals | null = useMemo(() => {
     const pools = yieldsQuery.data ?? [];
     const allChains = chainQuery.data ?? [];
+    // Wait for yields to finish loading before computing TVL breakdowns,
+    // otherwise chains loading first produces fake $0 for BTC/ETH TVL.
+    if (yieldsQuery.isLoading) return null;
     if (!pools.length && !allChains.length) return null;
 
     // Filter pools by chain scope
