@@ -61,9 +61,8 @@ export function useTvlData() {
   const totals: TvlTotals | null = useMemo(() => {
     const yieldsData = yieldsQuery.data;
     const allChains = chainQuery.data ?? [];
-    // Wait for yields to finish loading before computing TVL breakdowns
-    if (yieldsQuery.isLoading) return null;
-    if (!yieldsData && !allChains.length) return null;
+    // Need at least chain data to show anything meaningful
+    if (chainQuery.isLoading && !allChains.length) return null;
 
     const pools = yieldsData?.opportunities ?? [];
     const aaveBtcTvl = yieldsData?.aaveBtcTvl ?? 0;

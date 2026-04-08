@@ -27,9 +27,9 @@ export default function TvlAnalyticsPage() {
     const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = "btcvseth-chain-tvl.csv"; a.click();
   };
 
-  // Chain bar chart â€” top 12
+  // Chain bar chart — top 12
   const chartData = chains.slice(0, 12).map((c) => ({
-    name: c.name.length > 10 ? c.name.slice(0, 10) + "â€¦" : c.name,
+    name: c.name.length > 10 ? c.name.slice(0, 10) + "..." : c.name,
     tvl: c.tvl,
     fill: c.name === "Ethereum" ? "#5B7FFF" : c.name === "Bitcoin" ? "#F7931A" : c.name === "Solana" ? "#9B5BFF" : c.name === "Tron" ? "#EF4444" : "#06D6A0"
   }));
@@ -47,7 +47,7 @@ export default function TvlAnalyticsPage() {
       {/* Header */}
       <div className="flex flex-wrap items-center gap-3">
         <h1 className="text-2xl font-semibold">TVL Analytics</h1>
-        {isFetching && <Badge variant="default" className="text-xs animate-pulse">Refreshingâ€¦</Badge>}
+        {isFetching && <Badge variant="default" className="text-xs animate-pulse">Refreshing...</Badge>}
         <div className="ml-auto flex gap-2">
           <Button variant="outline" size="sm" onClick={exportCsv}><Download className="mr-2 h-4 w-4" />CSV</Button>
         </div>
@@ -88,7 +88,7 @@ export default function TvlAnalyticsPage() {
       {/* Chain TVL bar chart */}
       {chartData.length > 0 && (
         <Card className="border-white/5 bg-black/20">
-          <CardHeader><CardTitle>Chain TVL Ranking (Top 12 Â· DefiLlama)</CardTitle></CardHeader>
+          <CardHeader><CardTitle>Chain TVL Ranking (Top 12 · DefiLlama)</CardTitle></CardHeader>
           <CardContent>
             <ResponsiveContainer width="100%" height={280}>
               <BarChart data={chartData} margin={{ top: 8, right: 16, bottom: 0, left: 8 }}>
@@ -112,7 +112,7 @@ export default function TvlAnalyticsPage() {
       {defiCompare.length > 0 && (
         <div className="grid gap-6 lg:grid-cols-2">
           <Card className="border-white/5 bg-black/20">
-            <CardHeader><CardTitle>BTC vs ETH â€” DeFi Split</CardTitle></CardHeader>
+            <CardHeader><CardTitle>BTC vs ETH — DeFi Split</CardTitle></CardHeader>
             <CardContent>
               <ResponsiveContainer width="100%" height={200}>
                 <BarChart data={defiCompare} margin={{ top: 8, right: 8, bottom: 0, left: 8 }}>
