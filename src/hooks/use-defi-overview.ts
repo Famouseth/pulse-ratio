@@ -47,12 +47,21 @@ export function useDefiOverview() {
     }));
   }, [sparklinesQuery.data]);
 
+  function refetchAll() {
+    globalQuery.refetch();
+    sparklinesQuery.refetch();
+    defiQuery.refetch();
+  }
+
   return {
     globalMarket: globalQuery.data ?? null,
     sparklines: sparklinesQuery.data ?? null,
     normalizedSparklines,
     defiOverview: defiQuery.data ?? null,
-    isLoading: globalQuery.isLoading,
-    isError: globalQuery.isError
+    isLoading: globalQuery.isLoading || sparklinesQuery.isLoading || defiQuery.isLoading,
+    isFetching: globalQuery.isFetching || sparklinesQuery.isFetching || defiQuery.isFetching,
+    isError: globalQuery.isError,
+    dataUpdatedAt: globalQuery.dataUpdatedAt || null,
+    refetch: refetchAll
   };
 }

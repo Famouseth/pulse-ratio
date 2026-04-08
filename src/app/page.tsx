@@ -9,7 +9,8 @@ import { useDefiOverview } from "@/hooks/use-defi-overview";
 import { MetricCard } from "@/components/dashboard/metric-card";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { TvlBreakdownChart } from "@/components/dashboard/tvl-breakdown-chart";
-import { PriceRatioChart } from "@/components/charts/price-ratio-chart";
+import { TradingViewWidget } from "@/components/charts/tradingview-widget";
+import { RefreshBadge } from "@/components/ui/refresh-badge";
 import { formatUsd } from "@/lib/utils";
 
 function CorrelationRow({
@@ -49,17 +50,28 @@ function CorrelationRow({
 }
 
 export default function DashboardPage() {
-  const { data: market } = useMarketData();
-  const { totals, benchmark } = useTvlData();
+  const { data: market, dataUpdatedAt: marketUpdated, isFetching: marketFetching, refetch: refetchMarket } = useMarketData();
+  const { totals } = useTvlData();
   const { topYields } = useOpportunities();
-  const { globalMarket, defiOverview } = useDefiOverview();
+  const { globalMarket, defiOverview, isFetching: defiFetching, dataUpdatedAt: defiUpdated, refetch: refetchDefi } = useDefiOverview();
   const ratioHistory = useAppStore((s) => s.ratioHistory);
+  void ratioHistory; // kept for Binance WS side-effect (pushes ratio to store)
 
-  const ratioSeries = ratioHistory.map((entry) => ({ time: entry.timestamp, value: entry.ratio }));
   const ratio = market ? market.BTC.price / market.ETH.price : 0;
 
   return (
     <div className="space-y-6">
+      {/* Header with refresh timer */}
+      <div className="flex items-center justify-between">
+        <h1 className="text-xl font-semibold text-muted-foreground">Live Dashboard</h1>
+        <RefreshBadge
+          lastUpdated={marketUpdated || defiUpdated}
+          onRefresh={() => { refetchMarket(); refetchDefi(); }}
+          intervalMs={10_000}
+          isRefreshing={marketFetching || defiFetching}
+        />
+      </div>
+
       {/* Row 1: 8 live metrics */}
       <motion.section initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} className="grid gap-4 md:grid-cols-4">
         <MetricCard title="BTC Price (Live)" value={market?.BTC.price ?? 0} delta={market?.BTC.change24h ?? 0} tone="btc" />
@@ -75,15 +87,18 @@ export default function DashboardPage() {
         <MetricCard title="DEX Volume 24h" value={defiOverview?.dexVolume24h ?? 0} delta={0} />
       </motion.section>
 
-      {/* Row 2: Charts */}
+      {/* Row 2: TradingView full chart + TVL gauge */}
       <section className="grid gap-4 lg:grid-cols-3">
-        <Card className="lg:col-span-2">
-          <CardHeader>
-            <CardTitle>BTC / ETH Price Ratio — Live (Binance WS)</CardTitle>
+        <Card className="lg:col-span-2 overflow-hidden border-white/5">
+          <CardHeader className="pb-0">
+            <CardTitle className="text-sm text-muted-foreground">BTC / ETH Price Ratio — TradingView (BINANCE:BTCETH)</CardTitle>
           </CardHeader>
-          <CardContent>
-            <PriceRatioChart points={ratioSeries} />
-          </CardContent>
+          <TradingViewWidget
+            symbol="BINANCE:BTCETH"
+            interval="60"
+            height={380}
+            studies={["Volume@tv-basicstudies", "RSI@tv-basicstudies"]}
+          />
         </Card>
         <div className="space-y-4">
           <Card>
