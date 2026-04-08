@@ -9,14 +9,12 @@ const nextConfig = {
       }
     ]
   },
-  webpack: (config) => {
-    // silence missing optional peer deps from MetaMask SDK and WalletConnect
-    config.resolve.alias = {
-      ...config.resolve.alias,
-      "@react-native-async-storage/async-storage": false,
-      "pino-pretty": false
-    };
-    return config;
+  turbopack: {
+    // Stub optional peer deps that wallet SDKs reference but don't need in browser builds
+    resolveAlias: {
+      "@react-native-async-storage/async-storage": { browser: "./src/lib/empty-stub.js" },
+      "pino-pretty": { browser: "./src/lib/empty-stub.js" }
+    }
   }
 };
 
