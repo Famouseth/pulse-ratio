@@ -51,7 +51,7 @@ function CorrelationRow({
 
 export default function DashboardPage() {
   const { data: market, dataUpdatedAt: marketUpdated, isFetching: marketFetching, refetch: refetchMarket } = useMarketData();
-  const { totals } = useTvlData();
+  const { totals, chains, isFetching: tvlFetching } = useTvlData();
   const { topYields } = useOpportunities();
   const { globalMarket, defiOverview, isFetching: defiFetching, dataUpdatedAt: defiUpdated, refetch: refetchDefi } = useDefiOverview();
   const ratioHistory = useAppStore((s) => s.ratioHistory);
@@ -76,7 +76,7 @@ export default function DashboardPage() {
       <motion.section initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} className="grid gap-4 md:grid-cols-4">
         <MetricCard title="BTC Price (Live)" value={market?.BTC.price ?? 0} delta={market?.BTC.change24h ?? 0} tone="btc" />
         <MetricCard title="ETH Price (Live)" value={market?.ETH.price ?? 0} delta={market?.ETH.change24h ?? 0} tone="eth" />
-        <MetricCard title="BTC/ETH Price Ratio" value={ratio} delta={0} format={(v) => `${v.toFixed(2)}×`} />
+        <MetricCard title="BTC/ETH Price Ratio" value={ratio} delta={0} format={(v) => `${v.toFixed(2)}x`} />
         <MetricCard title="Total DeFi TVL" value={totals?.totalDeFiTvl ?? 0} delta={0} />
       </motion.section>
 
@@ -91,7 +91,7 @@ export default function DashboardPage() {
       <section className="grid gap-4 lg:grid-cols-3">
         <Card className="lg:col-span-2 overflow-hidden border-white/5 flex flex-col">
           <CardHeader className="pb-0 shrink-0">
-            <CardTitle className="text-sm text-muted-foreground">ETH / BTC Price Ratio — TradingView (BINANCE:ETHBTC)</CardTitle>
+            <CardTitle className="text-sm text-muted-foreground">ETH / BTC Price Ratio - TradingView (BINANCE:ETHBTC)</CardTitle>
           </CardHeader>
           <div className="min-h-[420px] h-[55vh] max-h-[680px] w-full grow">
             <TradingViewWidget
@@ -107,7 +107,13 @@ export default function DashboardPage() {
               <CardTitle className="text-sm">BTC vs ETH in DeFi TVL</CardTitle>
             </CardHeader>
             <CardContent>
-              <TvlBreakdownChart btc={totals?.btcTotal ?? 0} eth={totals?.ethTotal ?? 0} />
+              <TvlBreakdownChart
+              chains={chains}
+              totalTvl={totals?.totalDeFiTvl ?? 0}
+              btcPoolTvl={totals?.btcTotal ?? 0}
+              ethPoolTvl={totals?.ethTotal ?? 0}
+              isLoading={tvlFetching && !chains.length}
+            />
             </CardContent>
           </Card>
         </div>
@@ -116,7 +122,7 @@ export default function DashboardPage() {
       {/* Row 3: BTC vs ETH Correlation Scoreboard */}
       <Card className="border-white/5 bg-black/20">
         <CardHeader>
-          <CardTitle>BTC vs ETH — Correlation Scoreboard</CardTitle>
+          <CardTitle>BTC vs ETH - Correlation Scoreboard</CardTitle>
         </CardHeader>
         <CardContent className="divide-y divide-white/5">
           <CorrelationRow label="Market Cap" btcVal={market?.BTC.marketCap ?? 0} ethVal={market?.ETH.marketCap ?? 0} />
@@ -140,7 +146,7 @@ export default function DashboardPage() {
 
       {/* Row 4: Top yields + market cap summary */}
       <section className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-        <MetricCard title="BTC MCap / ETH MCap" value={market ? market.BTC.marketCap / market.ETH.marketCap : 0} delta={0} format={(v) => `${v.toFixed(2)}×`} />
+        <MetricCard title="BTC MCap / ETH MCap" value={market ? market.BTC.marketCap / market.ETH.marketCap : 0} delta={0} format={(v) => `${v.toFixed(2)}x`} />
         <MetricCard title="Top Yield APY" value={topYields[0]?.apy ?? 0} delta={topYields[0]?.apy ?? 0} format={(v) => `${v.toFixed(2)}%`} />
         <MetricCard title="Total Protocol Fees 24h" value={defiOverview?.fees24h ?? 0} delta={0} />
         <MetricCard title="Total Crypto Market Cap" value={globalMarket?.totalMarketCap ?? 0} delta={globalMarket?.change24h ?? 0} />
