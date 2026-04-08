@@ -1,0 +1,10 @@
+{
+  "name": "PulseRatio - BTC vs ETH TVL & LP Bonding Dashboard",
+  "short_name": "PulseRatio",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#04060d",
+  "theme_color": "#070b1a",
+  "description": "Real-time BTC vs ETH TVL, LP bonding, lending yields and arbitrage dashboard.",
+  "icons": []
+}
