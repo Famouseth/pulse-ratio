@@ -1,4 +1,4 @@
-# Deploy PulseRatio
+# Deploy BTCvsETH
 # Run this script once from the project root after installing GitHub CLI and Vercel CLI.
 # Prerequisites:
 #   - npm install --ignore-scripts (already done)
@@ -6,7 +6,7 @@
 #   - vercel CLI installed (already present)
 
 param (
-  [string]$RepoName = "pulse-ratio",
+  [string]$RepoName = "btcvseth",
   [string]$RepoDescription = "Real-time BTC vs ETH TVL and LP Bonding Dashboard",
   [switch]$Private = $false
 )

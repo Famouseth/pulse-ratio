@@ -22,7 +22,7 @@ export function Sidebar() {
   return (
     <aside className="hidden w-64 shrink-0 border-r border-white/10 bg-black/30 p-4 lg:block">
       <div className="mb-8 px-2">
-        <p className="text-xs uppercase tracking-[0.2em] text-cyber">PulseRatio</p>
+        <p className="text-xs uppercase tracking-[0.2em] text-cyber">BTCvsETH</p>
         <h2 className="mt-1 text-xl font-semibold">BTC vs ETH Control Room</h2>
       </div>
       <nav className="space-y-2">

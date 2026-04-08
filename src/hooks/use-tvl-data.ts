@@ -2,7 +2,7 @@
 
 import { useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { fetchChainTVL, fetchYieldOpportunities, inferAsset } from "@/lib/defillama-api";
+import { inferAsset } from "@/lib/defillama-api";
 import { useAppStore } from "@/store/use-app-store";
 import type { ChainTvlItem, TvlTotals } from "@/types";
 
@@ -11,24 +11,44 @@ const NON_EVM_CHAINS = new Set([
   "Cosmos", "Osmosis", "Injective", "Kujira", "Neutron", "Sei"
 ]);
 
+// Fetch via server-side API proxy (no client-side DefiLlama calls)
+async function fetchChainTVL(): Promise<ChainTvlItem[]> {
+  const res = await fetch("/api/chains");
+  if (!res.ok) throw new Error("chains API error");
+  return res.json();
+}
+
+interface YieldsResponse {
+  opportunities: import("@/types").Opportunity[];
+  aaveBtcTvl: number;
+  aaveEthTvl: number;
+}
+
+async function fetchYields(): Promise<YieldsResponse> {
+  const res = await fetch("/api/yields");
+  if (!res.ok) throw new Error("yields API error");
+  return res.json();
+}
+
 export function useTvlData() {
   const chainScope = useAppStore((s) => s.chainScope);
 
-  // Chain TVL: /v2/chains gives real per-chain TVL numbers
+  // Chain TVL: hourly refresh — top-level chain TVL barely moves
   const chainQuery = useQuery({
     queryKey: ["tvl", "chains"],
     queryFn: fetchChainTVL,
-    refetchInterval: 60_000,
-    staleTime: 50_000
+    refetchInterval: 60 * 60 * 1000,  // 1 hour
+    staleTime: 55 * 60 * 1000,
+    retry: 2
   });
 
-  // Yields: pool symbols ARE the underlying assets — this is the correct BTC/ETH filter
-  // Shares the cache with use-opportunities.ts (same queryKey)
+  // Yield pools: 15 min — pool APYs and TVL can shift throughout the day
   const yieldsQuery = useQuery({
     queryKey: ["opportunities", "all"],
-    queryFn: fetchYieldOpportunities,
-    refetchInterval: 60_000,
-    staleTime: 50_000
+    queryFn: fetchYields,
+    refetchInterval: 15 * 60 * 1000,  // 15 min
+    staleTime: 14 * 60 * 1000,
+    retry: 1
   });
 
   const chains: ChainTvlItem[] = useMemo(() => {
@@ -39,12 +59,15 @@ export function useTvlData() {
   }, [chainQuery.data, chainScope]);
 
   const totals: TvlTotals | null = useMemo(() => {
-    const pools = yieldsQuery.data ?? [];
+    const yieldsData = yieldsQuery.data;
     const allChains = chainQuery.data ?? [];
-    // Wait for yields to finish loading before computing TVL breakdowns,
-    // otherwise chains loading first produces fake $0 for BTC/ETH TVL.
+    // Wait for yields to finish loading before computing TVL breakdowns
     if (yieldsQuery.isLoading) return null;
-    if (!pools.length && !allChains.length) return null;
+    if (!yieldsData && !allChains.length) return null;
+
+    const pools = yieldsData?.opportunities ?? [];
+    const aaveBtcTvl = yieldsData?.aaveBtcTvl ?? 0;
+    const aaveEthTvl = yieldsData?.aaveEthTvl ?? 0;
 
     // Filter pools by chain scope
     const scopedPools = chainScope === "solana"
@@ -78,7 +101,9 @@ export function useTvlData() {
       ethTotal: ethLending + ethLp,
       combined: btcLending + btcLp + ethLending + ethLp,
       ethChainTvl: ethChain?.tvl ?? 0,
-      totalDeFiTvl
+      totalDeFiTvl,
+      aaveBtcTvl,
+      aaveEthTvl
     };
   }, [yieldsQuery.data, chainQuery.data, chainScope]);
 

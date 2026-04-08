@@ -2,31 +2,48 @@
 
 import { useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { fetchDeFiOverview } from "@/lib/defillama-api";
-import { fetchGlobalMarket, fetchSparklines } from "@/lib/market-api";
+
+// All fetches go through our server-side API routes (no direct third-party calls from client)
+async function fetchGlobalMarket() {
+  const res = await fetch("/api/global-market");
+  if (!res.ok) throw new Error("global market API error");
+  return res.json();
+}
+
+async function fetchSparklines() {
+  const res = await fetch("/api/sparklines");
+  if (!res.ok) throw new Error("sparklines API error");
+  return res.json();
+}
+
+async function fetchDeFiOverview() {
+  const res = await fetch("/api/defi-overview");
+  if (!res.ok) throw new Error("defi overview API error");
+  return res.json();
+}
 
 export function useDefiOverview() {
   const globalQuery = useQuery({
     queryKey: ["market", "global"],
     queryFn: fetchGlobalMarket,
-    refetchInterval: 90_000,
-    staleTime: 80_000,
+    refetchInterval: 5 * 60 * 1000,   // 5 min — dominance/total mcap changes slowly
+    staleTime: 4 * 60 * 1000,
     retry: 2
   });
 
   const sparklinesQuery = useQuery({
     queryKey: ["market", "sparklines"],
     queryFn: fetchSparklines,
-    refetchInterval: 300_000,   // 5 min — 7d chart doesn't need frequent refresh
-    staleTime: 280_000,
+    refetchInterval: 15 * 60 * 1000,  // 15 min — 7-day chart barely changes
+    staleTime: 14 * 60 * 1000,
     retry: 1
   });
 
   const defiQuery = useQuery({
     queryKey: ["defi", "overview"],
     queryFn: fetchDeFiOverview,
-    refetchInterval: 120_000,
-    staleTime: 100_000,
+    refetchInterval: 15 * 60 * 1000,  // 15 min — fees/DEX volume hour-level precision
+    staleTime: 14 * 60 * 1000,
     retry: 2
   });
 
@@ -38,7 +55,7 @@ export function useDefiOverview() {
     const btc0 = s.btcPrices[0];
     const eth0 = s.ethPrices[0];
 
-    return s.timestamps.map((ts, i) => ({
+    return s.timestamps.map((ts: number, i: number) => ({
       date: new Date(ts).toLocaleDateString("en-US", { month: "short", day: "numeric" }),
       btc: parseFloat(((s.btcPrices[i] / btc0) * 100).toFixed(2)),
       eth: parseFloat(((s.ethPrices[i] / eth0) * 100).toFixed(2)),

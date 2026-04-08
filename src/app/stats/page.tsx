@@ -207,6 +207,14 @@ export default function StatsPage() {
       ratio:    totals?.btcLending && totals.ethLending ? rx(totals.btcLending, totals.ethLending) : na
     },
     {
+      label:    "Aave TVL (WBTC/ETH)",
+      btc:      totals?.aaveBtcTvl ? formatUsd(totals.aaveBtcTvl, 1) : na,
+      eth:      totals?.aaveEthTvl ? formatUsd(totals.aaveEthTvl, 1) : na,
+      btcDelta: 0,
+      ethDelta: 0,
+      ratio:    totals?.aaveBtcTvl && totals.aaveEthTvl ? rx(totals.aaveBtcTvl, totals.aaveEthTvl) : na
+    },
+    {
       label:    "DeFi LP TVL",
       btc:      formatUsd(totals?.btcLp      ?? 0, 1),
       eth:      formatUsd(totals?.ethLp      ?? 0, 1),
@@ -258,7 +266,7 @@ export default function StatsPage() {
     ];
   }, [globalMarket]);
 
-  const chainBarData = chains.slice(0, 10).map((c) => ({
+  const chainBarData = chains.slice(0, 10).map((c: { name: string; tvl: number }) => ({
     name: c.name.length > 12 ? c.name.slice(0, 11) + "..." : c.name,
     tvl:  c.tvl,
     fill: c.name === "Ethereum" ? "#5B7FFF"
@@ -502,7 +510,7 @@ export default function StatsPage() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-white/5">
-                {rows.map((row) => (
+                {rows.map((row: { label: string; btc: string; eth: string; btcDelta: number; ethDelta: number; ratio: string }) => (
                   <tr key={row.label} className="transition-colors hover:bg-white/[0.02]">
                     <td className="px-6 py-3 text-muted-foreground">{row.label}</td>
                     <td className="px-6 py-3 text-right font-mono font-semibold text-[#F7931A]">
@@ -589,7 +597,7 @@ export default function StatsPage() {
                     formatter={(v: number) => [`${v.toFixed(1)}%`]}
                   />
                   <Bar dataKey="value" radius={[6, 6, 0, 0]}>
-                    {dominanceData.map((e) => <Cell key={e.name} fill={e.fill} />)}
+                    {dominanceData.map((e: { name: string; value: number; fill: string }) => <Cell key={e.name} fill={e.fill} />)}
                   </Bar>
                 </BarChart>
               </ResponsiveContainer>
@@ -618,7 +626,7 @@ export default function StatsPage() {
                     formatter={(v: number) => [formatUsd(v, 1)]}
                   />
                   <Bar dataKey="tvl" radius={[0, 4, 4, 0]}>
-                    {chainBarData.map((e) => <Cell key={e.name} fill={e.fill} />)}
+                    {chainBarData.map((e: { name: string; tvl: number; fill: string }) => <Cell key={e.name} fill={e.fill} />)}
                   </Bar>
                 </BarChart>
               </ResponsiveContainer>
@@ -633,7 +641,7 @@ export default function StatsPage() {
           <CardHeader><CardTitle>Top DEXes by 24h Volume</CardTitle></CardHeader>
           <CardContent className="p-0">
             <div className="divide-y divide-white/5">
-              {defiOverview.topDexes.map((dex, i) => {
+              {defiOverview.topDexes.map((dex: { name: string; volume24h: number; logo?: string }, i: number) => {
                 const sharePct = defiOverview.dexVolume24h > 0
                   ? (dex.volume24h / defiOverview.dexVolume24h) * 100
                   : 0;

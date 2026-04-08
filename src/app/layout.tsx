@@ -8,7 +8,7 @@ import { TopBar } from "@/components/layout/top-bar";
 const spaceGrotesk = Space_Grotesk({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "PulseRatio - BTC vs ETH TVL & LP Bonding Dashboard",
+  title: "BTCvsETH - BTC vs ETH TVL & LP Bonding Dashboard",
   description: "Real-time BTC vs ETH TVL comparison, LP and lending opportunities, bonding analytics, and arbitrage scanner."
 };
 

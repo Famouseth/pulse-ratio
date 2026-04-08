@@ -65,6 +65,6 @@ export const useWalletStore = create<WalletStore>()(
         }
       }
     }),
-    { name: "pulse-ratio-wallets" }
+    { name: "btcvseth-wallets" }
   )
 );

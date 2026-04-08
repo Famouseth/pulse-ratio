@@ -33,6 +33,8 @@ export interface TvlTotals {
   combined: number;
   ethChainTvl: number;    // real Ethereum chain TVL from DefiLlama /v2/chains
   totalDeFiTvl: number;   // sum of all chains
+  aaveBtcTvl: number;     // Aave BTC/WBTC lending TVL
+  aaveEthTvl: number;     // Aave ETH/stETH/wETH lending TVL
 }
 
 export interface ChainTvlItem {

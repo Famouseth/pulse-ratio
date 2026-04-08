@@ -17,7 +17,11 @@ export function useMarketData() {
   const marketQuery = useQuery({
     queryKey: ["market", "coingecko"],
     queryFn: fetchCoinGeckoMarket,
-    refetchInterval: 10_000
+    // Binance WS provides real-time prices — CoinGecko only needed for
+    // market cap, 24h volume, and 24h change (update every 2 min)
+    refetchInterval: 120_000,
+    staleTime: 110_000,
+    retry: 2
   });
 
   useEffect(() => {

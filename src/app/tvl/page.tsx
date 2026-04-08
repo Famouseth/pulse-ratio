@@ -24,7 +24,7 @@ export default function TvlAnalyticsPage() {
   const exportCsv = () => {
     const rows = chains.map((c) => ({ name: c.name, tvl_usd: c.tvl, change_1d_pct: c.change1d, change_7d_pct: c.change7d }));
     const blob = new Blob([toCsv(rows)], { type: "text/csv;charset=utf-8;" });
-    const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = "pulse-ratio-chain-tvl.csv"; a.click();
+    const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = "btcvseth-chain-tvl.csv"; a.click();
   };
 
   // Chain bar chart â€” top 12

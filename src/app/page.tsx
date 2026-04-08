@@ -128,6 +128,7 @@ export default function DashboardPage() {
           <CorrelationRow label="Market Cap" btcVal={market?.BTC.marketCap ?? 0} ethVal={market?.ETH.marketCap ?? 0} />
           <CorrelationRow label="24h Trade Volume" btcVal={market?.BTC.volume24h ?? 0} ethVal={market?.ETH.volume24h ?? 0} />
           <CorrelationRow label="DeFi TVL Exposure" btcVal={totals?.btcTotal ?? 0} ethVal={totals?.ethTotal ?? 0} />
+          <CorrelationRow label="Aave TVL (WBTC / ETH)" btcVal={totals?.aaveBtcTvl ?? 0} ethVal={totals?.aaveEthTvl ?? 0} />
           <CorrelationRow label="DeFi Lending" btcVal={totals?.btcLending ?? 0} ethVal={totals?.ethLending ?? 0} />
           <CorrelationRow label="DeFi LP" btcVal={totals?.btcLp ?? 0} ethVal={totals?.ethLp ?? 0} />
           <CorrelationRow

@@ -3,22 +3,19 @@
 import { useQuery } from "@tanstack/react-query";
 
 export interface FearGreedData {
-  value: number;           // 0-100
-  classification: string;  // "Extreme Fear" | "Fear" | "Neutral" | "Greed" | "Extreme Greed"
+  value: number;
+  classification: string;
   timestamp: Date;
 }
 
 async function fetchFearGreed(): Promise<FearGreedData> {
-  const res = await fetch("https://api.alternative.me/fng/?limit=1", {
-    next: { revalidate: 3600 }
-  });
+  const res = await fetch("/api/fear-greed");
   if (!res.ok) throw new Error("Fear & Greed API unavailable");
   const json = await res.json();
-  const entry = json.data[0];
   return {
-    value: Number(entry.value),
-    classification: entry.value_classification ?? "Unknown",
-    timestamp: new Date(Number(entry.timestamp) * 1000)
+    value: json.value,
+    classification: json.classification,
+    timestamp: new Date(json.timestamp)
   };
 }
 
@@ -26,7 +23,7 @@ export function useFearGreed() {
   return useQuery({
     queryKey: ["market", "feargreed"],
     queryFn: fetchFearGreed,
-    refetchInterval: 60 * 60 * 1000, // hourly — index only updates once/day
+    refetchInterval: 60 * 60 * 1000,  // hourly
     staleTime: 55 * 60 * 1000,
     retry: 1
   });
