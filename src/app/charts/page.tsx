@@ -16,10 +16,10 @@ import { useDefiOverview } from "@/hooks/use-defi-overview";
 import { formatUsd } from "@/lib/utils";
 
 const SYMBOLS = [
-  { label: "BTC/ETH Ratio", value: "BINANCE:BTCETH" },
+  { label: "ETH/BTC Ratio", value: "BINANCE:ETHBTC" },
   { label: "BTC/USD", value: "BINANCE:BTCUSDT" },
   { label: "ETH/USD", value: "BINANCE:ETHUSDT" },
-  { label: "ETH/BTC", value: "BINANCE:ETHBTC" }
+  { label: "Total Crypto MCap", value: "CRYPTOCAP:TOTAL" }
 ] as const;
 
 const INTERVALS = [
@@ -119,12 +119,13 @@ export default function ChartsPage() {
 
           {/* Full TradingView chart with RSI, MACD, Volume */}
           <Card className="overflow-hidden border-white/5">
-            <TradingViewWidget
-              symbol={symbol}
-              interval={interval}
-              height={600}
-              studies={["Volume@tv-basicstudies", "RSI@tv-basicstudies", "MACD@tv-basicstudies", "BB@tv-basicstudies"]}
-            />
+            <div className="min-h-[520px] h-[calc(100vh-300px)] max-h-[900px] w-full">
+              <TradingViewWidget
+                symbol={symbol}
+                interval={interval}
+                studies={["Volume@tv-basicstudies", "RSI@tv-basicstudies", "MACD@tv-basicstudies", "BB@tv-basicstudies"]}
+              />
+            </div>
           </Card>
 
           {/* Live stat bar */}

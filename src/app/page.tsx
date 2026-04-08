@@ -89,16 +89,17 @@ export default function DashboardPage() {
 
       {/* Row 2: TradingView full chart + TVL gauge */}
       <section className="grid gap-4 lg:grid-cols-3">
-        <Card className="lg:col-span-2 overflow-hidden border-white/5">
-          <CardHeader className="pb-0">
-            <CardTitle className="text-sm text-muted-foreground">BTC / ETH Price Ratio — TradingView (BINANCE:BTCETH)</CardTitle>
+        <Card className="lg:col-span-2 overflow-hidden border-white/5 flex flex-col">
+          <CardHeader className="pb-0 shrink-0">
+            <CardTitle className="text-sm text-muted-foreground">ETH / BTC Price Ratio — TradingView (BINANCE:ETHBTC)</CardTitle>
           </CardHeader>
-          <TradingViewWidget
-            symbol="BINANCE:BTCETH"
-            interval="60"
-            height={380}
-            studies={["Volume@tv-basicstudies", "RSI@tv-basicstudies"]}
-          />
+          <div className="min-h-[420px] h-[55vh] max-h-[680px] w-full grow">
+            <TradingViewWidget
+              symbol="BINANCE:ETHBTC"
+              interval="60"
+              studies={["Volume@tv-basicstudies", "RSI@tv-basicstudies"]}
+            />
+          </div>
         </Card>
         <div className="space-y-4">
           <Card>

@@ -5,7 +5,9 @@ import { useEffect, useRef } from "react";
 export interface TradingViewWidgetProps {
   symbol?: string;
   interval?: string;
-  height?: number;
+  /** Fixed pixel height. Omit to fill the parent container (height: 100%). */
+  height?: number | string;
+  className?: string;
   studies?: string[];
   style?: "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8";
   allowSymbolChange?: boolean;
@@ -19,9 +21,10 @@ const DEFAULT_STUDIES = [
 ];
 
 export function TradingViewWidget({
-  symbol = "BINANCE:BTCETH",
+  symbol = "BINANCE:ETHBTC",
   interval = "60",
-  height = 520,
+  height,
+  className,
   studies = DEFAULT_STUDIES,
   style = "1",
   allowSymbolChange = true,
@@ -85,8 +88,8 @@ export function TradingViewWidget({
   return (
     <div
       ref={containerRef}
-      className="tradingview-widget-container w-full overflow-hidden"
-      style={{ height }}
+      className={`tradingview-widget-container w-full overflow-hidden${className ? ` ${className}` : ""}`}
+      style={{ height: height ?? "100%" }}
     />
   );
 }
