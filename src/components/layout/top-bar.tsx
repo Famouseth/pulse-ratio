@@ -1,7 +1,5 @@
 "use client";
 
-import { ConnectButton } from "@rainbow-me/rainbowkit";
-import { WalletMultiButton } from "@solana/wallet-adapter-react-ui";
 import { useAppStore } from "@/store/use-app-store";
 import { useMarketData } from "@/hooks/use-market-data";
 import { useTvlData } from "@/hooks/use-tvl-data";
@@ -30,8 +28,6 @@ export function TopBar() {
           <Button variant={chainScope === "all" ? "default" : "outline"} size="sm" onClick={() => setChainScope("all")}>All</Button>
           <Button variant={chainScope === "evm" ? "default" : "outline"} size="sm" onClick={() => setChainScope("evm")}>EVM</Button>
           <Button variant={chainScope === "solana" ? "default" : "outline"} size="sm" onClick={() => setChainScope("solana")}>Solana</Button>
-          <ConnectButton chainStatus="icon" accountStatus="address" />
-          <WalletMultiButton className="!h-10 !rounded-xl !bg-white/10 hover:!bg-white/20" />
         </div>
       </div>
     </header>

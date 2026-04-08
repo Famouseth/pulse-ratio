@@ -12,7 +12,7 @@ const navItems = [
   { href: "/bonding", label: "Bonding Hub", icon: Gem },
   { href: "/charts", label: "Charts", icon: CandlestickChart },
   { href: "/arb", label: "Arbitrage", icon: Scale },
-  { href: "/portfolio", label: "Portfolio", icon: Wallet },
+  { href: "/portfolio", label: "Wallet Tracker", icon: Wallet },
   { href: "/stats", label: "Stats", icon: Activity }
 ];
 

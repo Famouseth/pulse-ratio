@@ -55,3 +55,29 @@ export interface BondingProjection {
   breakEvenDays: number;
   projectedValue: number;
 }
+
+export interface WalletToken {
+  symbol: string;
+  name: string;
+  balance: number;
+  usdValue: number;
+  logo: string | null;
+  mint?: string; // Solana mint address
+}
+
+export interface WalletSnapshot {
+  nativeBalance: number;
+  nativeSymbol: string;
+  nativeUsd: number;
+  tokens: WalletToken[];
+  txCount: number;
+  fetchedAt: number;
+}
+
+export interface WalletEntry {
+  address: string;
+  chain: "evm" | "solana";
+  label?: string;
+  viewedAt: number;
+  snapshot?: WalletSnapshot;
+}

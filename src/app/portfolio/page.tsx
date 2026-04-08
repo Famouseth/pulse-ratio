@@ -1,43 +1,71 @@
 "use client";
 
-import { useAccount } from "wagmi";
-import { useWallet } from "@solana/wallet-adapter-react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { useTvlData } from "@/hooks/use-tvl-data";
+import { useEffect } from "react";
+import { AlertCircle } from "lucide-react";
+import { WalletSearchBar } from "@/components/wallet/wallet-search-bar";
+import { WalletDisplay } from "@/components/wallet/wallet-display";
+import { WalletHistory } from "@/components/wallet/wallet-history";
+import { SessionKey } from "@/components/wallet/session-key";
+import { useWalletLookup } from "@/hooks/use-wallet-lookup";
+import { useWalletStore } from "@/store/use-wallet-store";
 
-export default function PortfolioPage() {
-  const evmAccount = useAccount();
-  const solWallet = useWallet();
-  const { totals } = useTvlData();
+export default function WalletTrackerPage() {
+  const { result, loading, error, lookup } = useWalletLookup();
+  const { addOrUpdate, setActive } = useWalletStore();
+
+  // Persist to history on each successful lookup
+  useEffect(() => {
+    if (!result) return;
+    addOrUpdate({
+      address: result.address,
+      chain: result.chain,
+      viewedAt: Date.now(),
+      snapshot: result.snapshot
+    });
+    setActive(result.address);
+  }, [result, addOrUpdate, setActive]);
 
   return (
     <div className="space-y-6">
-      <h1 className="text-2xl font-semibold">Portfolio & Stats</h1>
-      <section className="grid gap-4 md:grid-cols-2">
-        <Card>
-          <CardHeader><CardTitle>EVM Wallet</CardTitle></CardHeader>
-          <CardContent className="text-sm text-muted-foreground">
-            <p>Address: {evmAccount.address ?? "Not connected"}</p>
-            <p>Status: {evmAccount.isConnected ? "Connected" : "Disconnected"}</p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader><CardTitle>Solana Wallet</CardTitle></CardHeader>
-          <CardContent className="text-sm text-muted-foreground">
-            <p>Address: {solWallet.publicKey?.toBase58() ?? "Not connected"}</p>
-            <p>Status: {solWallet.connected ? "Connected" : "Disconnected"}</p>
-          </CardContent>
-        </Card>
-      </section>
+      <div>
+        <h1 className="text-2xl font-semibold">Wallet Tracker</h1>
+        <p className="mt-1 text-sm text-muted-foreground">
+          Paste any EVM or Solana address to inspect it — no wallet connection required.
+        </p>
+      </div>
 
-      <Card>
-        <CardHeader><CardTitle>Aggregated BTC/ETH TVL Exposure</CardTitle></CardHeader>
-        <CardContent className="text-sm text-muted-foreground">
-          <p>Live BTC Core TVL: ${totals?.btcTotal.toFixed(2) ?? "0.00"}</p>
-          <p>Live ETH Core TVL: ${totals?.ethTotal.toFixed(2) ?? "0.00"}</p>
-          <p>Use protocol adapters in lib/evm-utils and lib/solana-utils to attach on-chain position queries.</p>
-        </CardContent>
-      </Card>
+      {/* Search bar */}
+      <WalletSearchBar loading={loading} onLookup={lookup} />
+
+      {/* Error banner */}
+      {error && (
+        <div className="flex items-center gap-2 rounded-xl border border-destructive/30 bg-destructive/10 px-4 py-3 text-sm text-destructive">
+          <AlertCircle className="h-4 w-4 shrink-0" />
+          {error}
+        </div>
+      )}
+
+      {/* Main split layout */}
+      <div className="grid gap-6 lg:grid-cols-3">
+        {/* Wallet details — takes 2/3 on large screens */}
+        <div className="lg:col-span-2">
+          {result ? (
+            <WalletDisplay result={result} />
+          ) : (
+            !error && (
+              <div className="flex h-48 items-center justify-center rounded-xl border border-dashed border-white/10 text-sm text-muted-foreground">
+                Wallet details will appear here
+              </div>
+            )
+          )}
+        </div>
+
+        {/* History + session key */}
+        <div className="space-y-4">
+          <WalletHistory onSelect={lookup} />
+          <SessionKey />
+        </div>
+      </div>
     </div>
   );
 }
