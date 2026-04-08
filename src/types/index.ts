@@ -31,6 +31,39 @@ export interface TvlTotals {
   btcTotal: number;
   ethTotal: number;
   combined: number;
+  ethChainTvl: number;    // real Ethereum chain TVL from DefiLlama /v2/chains
+  totalDeFiTvl: number;   // sum of all chains
+}
+
+export interface ChainTvlItem {
+  name: string;
+  tvl: number;
+  tokenSymbol: string;
+  change1d: number;
+  change7d: number;
+}
+
+export interface GlobalMarket {
+  totalMarketCap: number;
+  total24hVolume: number;
+  btcDominance: number;
+  ethDominance: number;
+  change24h: number;
+  activeCryptos: number;
+}
+
+export interface SparklineData {
+  btcPrices: number[];
+  ethPrices: number[];
+  timestamps: number[];
+}
+
+export interface DeFiOverview {
+  dexVolume24h: number;
+  dexVolume7d: number;
+  fees24h: number;
+  fees7d: number;
+  topDexes: Array<{ name: string; volume24h: number }>;
 }
 
 export interface Opportunity {

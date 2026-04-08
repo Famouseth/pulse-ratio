@@ -8,7 +8,9 @@ export function aggregateTvl(points: TvlProtocolPoint[]): TvlTotals {
     ethLp: 0,
     btcTotal: 0,
     ethTotal: 0,
-    combined: 0
+    combined: 0,
+    ethChainTvl: 0,
+    totalDeFiTvl: 0
   } satisfies TvlTotals;
 
   for (const point of points) {
