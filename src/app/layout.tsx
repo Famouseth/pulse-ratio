@@ -2,8 +2,7 @@ import type { Metadata } from "next";
 import { Space_Grotesk } from "next/font/google";
 import "./globals.css";
 import { Providers } from "@/components/providers";
-import { Sidebar } from "@/components/layout/sidebar";
-import { TopBar } from "@/components/layout/top-bar";
+import { ShellWrapper } from "@/components/layout/shell-wrapper";
 
 const spaceGrotesk = Space_Grotesk({ subsets: ["latin"] });
 
@@ -21,13 +20,7 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <body className={spaceGrotesk.className}>
         <Providers>
-          <div className="flex min-h-screen cyber-grid">
-            <Sidebar />
-            <div className="flex min-h-screen flex-1 flex-col">
-              <TopBar />
-              <main className="flex-1 p-4 md:p-6">{children}</main>
-            </div>
-          </div>
+          <ShellWrapper>{children}</ShellWrapper>
         </Providers>
       </body>
     </html>
