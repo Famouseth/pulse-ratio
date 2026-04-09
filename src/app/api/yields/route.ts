@@ -64,6 +64,22 @@ export async function GET() {
 
       const fees = Math.max(0, volumeUsd1d * 0.0025);
       const isLending = LENDING_PROJECTS.has(project);
+
+      // ── Quality gates ───────────────────────────────────────────────────
+      // 1. Hard APY ceiling — DefiLlama sometimes carries stale/inflated reward APRs
+      if (apy > 9_999) continue;
+      // 2. LP illiquidity — require at least $10k/day volume to be tradeable
+      if (!isLending && volumeUsd1d < 10_000) continue;
+      // 3. LP APY sanity vs. fee revenue: if claimed APY is >5× what 0.3%-fee
+      //    trading can realistically generate, the excess is unsustainable incentives
+      if (!isLending && volumeUsd1d > 0) {
+        const impliedFeeApy = (volumeUsd1d * 0.003 / tvlUsd) * 365 * 100;
+        if (apy > Math.max(impliedFeeApy * 5, 500)) continue;
+      }
+      // 4. Lending APY sanity — organic borrow rates above 300% are stale data
+      if (isLending && apy > 300) continue;
+      // ────────────────────────────────────────────────────────────────────
+
       const ilEstimate = Math.min(9.9, Math.max(0.2, apy * 0.08));
       const lvrEstimate = Math.min(6, Math.max(0.1, apy * 0.05));
       const score =
@@ -81,6 +97,10 @@ export async function GET() {
         fees24h: fees, ilEstimate, lvrEstimate, score
       });
     }
+
+    // Sort by composite score descending, keep top 205 quality pools
+    opportunities.sort((a, b) => b.score - a.score);
+    opportunities.splice(205);
 
     return NextResponse.json(
       { opportunities, aaveBtcTvl, aaveEthTvl },
