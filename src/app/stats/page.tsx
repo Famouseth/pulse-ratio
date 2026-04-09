@@ -761,7 +761,11 @@ export default function StatsPage() {
           </div>
           <div className="rounded-xl border border-white/10 bg-black/20 p-3">
             <p className="text-xs text-muted-foreground">OmniBridge 24h Volume</p>
-            <p className="mt-1 text-lg font-semibold text-[#9333ea]">{pulseData ? formatUsd(pulseData.bridge24hVolume, 2) : "—"}</p>
+            <p className="mt-1 text-lg font-semibold text-[#9333ea]">
+              {pulseData?.bridge24hVolume !== null && pulseData?.bridge24hVolume !== undefined
+                ? formatUsd(pulseData.bridge24hVolume, 2)
+                : "N/A"}
+            </p>
           </div>
           <div className="rounded-xl border border-white/10 bg-black/20 p-3">
             <p className="text-xs text-muted-foreground">Latest Block</p>

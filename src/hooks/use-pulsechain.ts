@@ -9,7 +9,7 @@ export interface PulseChainData {
   plsPrice: number;
   latestBlock: number | null;
   bridgeName: string;
-  bridge24hVolume: number;
+  bridge24hVolume: number | null;
   bridgeContracts: {
     ethOmniBridge: string;
     ethAmb: string;

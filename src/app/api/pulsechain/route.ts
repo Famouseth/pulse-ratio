@@ -9,11 +9,13 @@ const PLS_RPCS = [
 ];
 
 const LLAMA_BASE = process.env.LLAMA_PROTOCOLS_BASE ?? "https://api.llama.fi";
-const LLAMA_COINS = "https://coins.llama.fi";
 const LLAMA_BRIDGES = "https://bridges.llama.fi";
+const COINGECKO_BASE = "https://api.coingecko.com/api/v3";
+const DEXSCREENER_BASE = "https://api.dexscreener.com/latest/dex";
 
 // Wrapped PLS address on PulseChain
 const WPLS = "pulsechain:0xA1077a294dDE1B09bB078844df40758a5D0f9a27";
+const WPLS_ADDRESS = "0xA1077a294dDE1B09bB078844df40758a5D0f9a27";
 
 async function getLatestBlock(): Promise<string | null> {
   for (const rpc of PLS_RPCS) {
@@ -39,9 +41,10 @@ export const revalidate = 300; // 5 min
 
 export async function GET() {
   try {
-    const [chainsRes, coinsRes, bridgesRes, blockHex] = await Promise.allSettled([
+    const [chainsRes, cgRes, dexRes, bridgesRes, blockHex] = await Promise.allSettled([
       fetch(`${LLAMA_BASE}/v2/chains`, { next: { revalidate: 3600 } }),
-      fetch(`${LLAMA_COINS}/prices/current/${WPLS}`, { next: { revalidate: 300 } }),
+      fetch(`${COINGECKO_BASE}/simple/price?ids=pulsechain&vs_currencies=usd`, { next: { revalidate: 300 } }),
+      fetch(`${DEXSCREENER_BASE}/tokens/${WPLS_ADDRESS}`, { next: { revalidate: 120 } }),
       fetch(`${LLAMA_BRIDGES}/bridges`, { next: { revalidate: 3600 } }),
       getLatestBlock(),
     ]);
@@ -54,7 +57,7 @@ export async function GET() {
       const chains = (await chainsRes.value.json()) as Array<{
         name: string; tvl: number; change_1d?: number | null; change_7d?: number | null;
       }>;
-      const pulse = chains.find((c) => c.name === "Pulse");
+      const pulse = chains.find((c) => c.name.toLowerCase().includes("pulse"));
       if (pulse) {
         plsTvl = pulse.tvl ?? 0;
         plsChange1d = pulse.change_1d ?? 0;
@@ -62,18 +65,23 @@ export async function GET() {
       }
     }
 
-    // PLS price from DefiLlama coins (WPLS)
+    // PLS price: CoinGecko primary, DexScreener fallback
     let plsPrice = 0;
-    if (coinsRes.status === "fulfilled" && coinsRes.value.ok) {
-      const coins = (await coinsRes.value.json()) as {
-        coins?: Record<string, { price: number }>;
+    if (cgRes.status === "fulfilled" && cgRes.value.ok) {
+      const cg = (await cgRes.value.json()) as { pulsechain?: { usd?: number } };
+      plsPrice = cg.pulsechain?.usd ?? 0;
+    }
+    if (plsPrice <= 0 && dexRes.status === "fulfilled" && dexRes.value.ok) {
+      const dex = (await dexRes.value.json()) as {
+        pairs?: Array<{ chainId?: string; priceUsd?: string }>;
       };
-      plsPrice = coins.coins?.[WPLS]?.price ?? 0;
+      const pulsePair = dex.pairs?.find((p) => p.chainId?.toLowerCase() === "pulsechain" && p.priceUsd);
+      if (pulsePair?.priceUsd) plsPrice = Number.parseFloat(pulsePair.priceUsd) || 0;
     }
 
-    // Bridge stats from DefiLlama
+    // Bridge stats from DefiLlama (paid endpoint may return no data)
     let bridgeName = "PulseChain OmniBridge";
-    let bridge24hVolume = 0;
+    let bridge24hVolume: number | null = null;
     if (bridgesRes.status === "fulfilled" && bridgesRes.value.ok) {
       const bdData = (await bridgesRes.value.json()) as {
         bridges?: Array<{
@@ -81,6 +89,7 @@ export async function GET() {
           chains?: string[];
           currentDayVolume?: number;
           lastDayVolume?: number;
+          dailyVolume?: number;
         }>;
       };
       const plsBridge = bdData.bridges?.find(
@@ -90,7 +99,7 @@ export async function GET() {
       );
       if (plsBridge) {
         bridgeName = plsBridge.displayName ?? bridgeName;
-        bridge24hVolume = plsBridge.currentDayVolume ?? plsBridge.lastDayVolume ?? 0;
+        bridge24hVolume = plsBridge.currentDayVolume ?? plsBridge.lastDayVolume ?? plsBridge.dailyVolume ?? null;
       }
     }
 

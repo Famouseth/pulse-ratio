@@ -93,9 +93,11 @@ export default function PulseChainPage() {
   );
 
   const blockStr = data?.latestBlock ? data.latestBlock.toLocaleString() : "—";
-  const plsPriceStr = data?.plsPrice ? `$${data.plsPrice.toFixed(6)}` : "—";
-  const plsTvlStr = data?.plsTvl ? formatUsd(data.plsTvl, 2) : "—";
-  const bridgeVolStr = data?.bridge24hVolume ? formatUsd(data.bridge24hVolume, 2) : "—";
+  const plsPriceStr = data && Number.isFinite(data.plsPrice) && data.plsPrice > 0 ? `$${data.plsPrice.toFixed(6)}` : "N/A";
+  const plsTvlStr = data && Number.isFinite(data.plsTvl) && data.plsTvl >= 0 ? formatUsd(data.plsTvl, 2) : "N/A";
+  const bridgeVolStr = data?.bridge24hVolume !== null && data?.bridge24hVolume !== undefined
+    ? formatUsd(data.bridge24hVolume, 2)
+    : "N/A";
 
   return (
     <div className="space-y-6">
