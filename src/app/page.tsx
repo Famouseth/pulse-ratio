@@ -11,6 +11,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { TvlBreakdownChart } from "@/components/dashboard/tvl-breakdown-chart";
 import { TradingViewWidget } from "@/components/charts/tradingview-widget";
 import { RefreshBadge } from "@/components/ui/refresh-badge";
+import { DataSources } from "@/components/ui/data-sources";
 import { formatUsd } from "@/lib/utils";
 
 function CorrelationRow({
@@ -62,8 +63,11 @@ export default function DashboardPage() {
   return (
     <div className="space-y-6">
       {/* Header with refresh timer */}
-      <div className="flex items-center justify-between">
-        <h1 className="text-xl font-semibold text-muted-foreground">Live Dashboard</h1>
+      <div className="flex items-center justify-between flex-wrap gap-2">
+        <div>
+          <h1 className="text-xl font-semibold text-muted-foreground">Live Dashboard</h1>
+          <DataSources sources={["binance", "coingecko", "defillama", "defillamaYields", "feargreed", "tradingview"]} />
+        </div>
         <RefreshBadge
           lastUpdated={marketUpdated || defiUpdated}
           onRefresh={() => { refetchMarket(); refetchDefi(); }}

@@ -2,6 +2,7 @@
 
 import { BondingCalculator } from "@/components/dashboard/bonding-calculator";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { DataSources } from "@/components/ui/data-sources";
 import { useOpportunities } from "@/hooks/use-opportunities";
 import { topBondingLeaderboard } from "@/lib/bonding-utils";
 
@@ -13,7 +14,10 @@ export default function BondingPage() {
 
   return (
     <div className="space-y-6">
-      <h1 className="text-2xl font-semibold">LP Bonding & Yield Hub</h1>
+      <div>
+        <h1 className="text-2xl font-semibold">LP Bonding & Yield Hub</h1>
+        <DataSources sources={["defillamaYields", "aave", "uniswap", "defillama", "tokenterminal"]} />
+      </div>
 
       <BondingCalculator />
 

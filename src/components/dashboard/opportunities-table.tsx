@@ -19,9 +19,10 @@ const helper = createColumnHelper<Opportunity>();
 
 interface Props {
   data: Opportunity[];
+  isLoading?: boolean;
 }
 
-export function OpportunitiesTable({ data }: Props) {
+export function OpportunitiesTable({ data, isLoading }: Props) {
   const [sorting, setSorting] = useState<SortingState>([{ id: "score", desc: true }]);
 
   const columns = useMemo(
@@ -55,26 +56,39 @@ export function OpportunitiesTable({ data }: Props) {
   return (
     <div className="overflow-hidden rounded-2xl border border-white/10">
       <div className="overflow-x-auto">
-        <Table>
-          <TableHeader>
-            {table.getHeaderGroups().map((group) => (
-              <TableRow key={group.id}>
-                {group.headers.map((header) => (
-                  <TableHead key={header.id}>{flexRender(header.column.columnDef.header, header.getContext())}</TableHead>
-                ))}
-              </TableRow>
+        {isLoading ? (
+          <div className="space-y-2 p-4">
+            {Array.from({ length: 8 }).map((_, i) => (
+              <div key={i} className="h-10 animate-pulse rounded-lg bg-white/5" />
             ))}
-          </TableHeader>
-          <TableBody>
-            {table.getRowModel().rows.map((row) => (
-              <TableRow key={row.id}>
-                {row.getVisibleCells().map((cell) => (
-                  <TableCell key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</TableCell>
-                ))}
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
+          </div>
+        ) : data.length === 0 ? (
+          <div className="flex flex-col items-center justify-center py-16 text-sm text-muted-foreground gap-2">
+            <span className="text-2xl">📊</span>
+            <p>No pools found. Data loads from DefiLlama — refresh in a moment.</p>
+          </div>
+        ) : (
+          <Table>
+            <TableHeader>
+              {table.getHeaderGroups().map((group) => (
+                <TableRow key={group.id}>
+                  {group.headers.map((header) => (
+                    <TableHead key={header.id}>{flexRender(header.column.columnDef.header, header.getContext())}</TableHead>
+                  ))}
+                </TableRow>
+              ))}
+            </TableHeader>
+            <TableBody>
+              {table.getRowModel().rows.map((row) => (
+                <TableRow key={row.id}>
+                  {row.getVisibleCells().map((cell) => (
+                    <TableCell key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</TableCell>
+                  ))}
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        )}
       </div>
     </div>
   );

@@ -72,7 +72,7 @@ export async function GET() {
         const sym = String(p.symbol ?? "").toLowerCase();
         const apy = typeof p.apy === "number" ? p.apy : typeof p.apyBase === "number" ? (p.apyBase as number) : 0;
         const tvl = typeof p.tvlUsd === "number" ? p.tvlUsd : 0;
-        if (apy < 0.1 || tvl < 100_000) continue;
+        if (apy < 0.1 || tvl < 500_000) continue;
 
         const isBtc = BTC_KW.some((k) => sym.includes(k));
         const isEth = ETH_KW.some((k) => sym.includes(k));

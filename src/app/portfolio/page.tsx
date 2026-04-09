@@ -6,6 +6,7 @@ import { WalletSearchBar } from "@/components/wallet/wallet-search-bar";
 import { WalletDisplay } from "@/components/wallet/wallet-display";
 import { WalletHistory } from "@/components/wallet/wallet-history";
 import { SessionKey } from "@/components/wallet/session-key";
+import { DataSources } from "@/components/ui/data-sources";
 import { useWalletLookup } from "@/hooks/use-wallet-lookup";
 import { useWalletStore } from "@/store/use-wallet-store";
 
@@ -32,6 +33,7 @@ export default function WalletTrackerPage() {
         <p className="mt-1 text-sm text-muted-foreground">
           Paste any EVM or Solana address to inspect it — no wallet connection required.
         </p>
+        <DataSources sources={["etherscan", "solscan", "nansen", "dune"]} />
       </div>
 
       {/* Search bar */}

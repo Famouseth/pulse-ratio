@@ -8,6 +8,7 @@ import {
 import { TrendingUp, TrendingDown, Minus, Zap, AlertCircle, CheckCircle } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { RefreshBadge } from "@/components/ui/refresh-badge";
+import { DataSources } from "@/components/ui/data-sources";
 import { useMarketData } from "@/hooks/use-market-data";
 import { useTvlData } from "@/hooks/use-tvl-data";
 import { useDefiOverview } from "@/hooks/use-defi-overview";
@@ -282,6 +283,7 @@ export default function StatsPage() {
       {/* Header */}
       <div className="flex flex-wrap items-center justify-between gap-3">
         <h1 className="text-2xl font-semibold">BTC vs ETH Deep Analysis</h1>
+        <DataSources sources={["coingecko", "defillama", "defillamaYields", "binance", "feargreed", "coinglass", "dune", "tokenterminal"]} />
         <RefreshBadge
           lastUpdated={marketUpdated || defiUpdated}
           onRefresh={() => { refetchMarket(); refetchDefi(); }}
@@ -666,6 +668,80 @@ export default function StatsPage() {
           </CardContent>
         </Card>
       )}
+
+      {/* Resource Hub */}
+      <Card className="border-white/5 bg-black/20">
+        <CardHeader><CardTitle className="text-base">DeFi Resource Hub</CardTitle></CardHeader>
+        <CardContent>
+          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+            {[
+              {
+                category: "Analytics & TVL",
+                links: [
+                  { label: "DefiLlama", desc: "TVL rankings & protocols", href: "https://defillama.com", color: "#2172e5" },
+                  { label: "DefiLlama Chains", desc: "Chain TVL breakdown", href: "https://defillama.com/chains", color: "#2172e5" },
+                  { label: "DefiLlama Yields", desc: "Best DeFi APYs", href: "https://defillama.com/yields", color: "#2172e5" },
+                  { label: "Token Terminal", desc: "Protocol revenues & P/E", href: "https://tokenterminal.com", color: "#a78bfa" },
+                  { label: "Dune Analytics", desc: "On-chain SQL analytics", href: "https://dune.com", color: "#e67bf0" },
+                  { label: "Messari", desc: "Research & asset profiles", href: "https://messari.io", color: "#06d6a0" },
+                ]
+              },
+              {
+                category: "Market Data",
+                links: [
+                  { label: "CoinGecko", desc: "Prices, market cap, history", href: "https://www.coingecko.com", color: "#8dc63f" },
+                  { label: "CoinMarketCap", desc: "Market rankings & data", href: "https://coinmarketcap.com", color: "#3861fb" },
+                  { label: "Fear & Greed Index", desc: "Crypto sentiment gauge", href: "https://alternative.me/crypto/fear-and-greed-index/", color: "#ef4444" },
+                  { label: "Coinglass", desc: "Funding rates & open interest", href: "https://www.coinglass.com", color: "#00c3ff" },
+                  { label: "TradingView", desc: "Advanced charting", href: "https://www.tradingview.com/chart/?symbol=BINANCE:ETHBTC", color: "#2962ff" },
+                ]
+              },
+              {
+                category: "Exchanges & DeFi",
+                links: [
+                  { label: "Binance Spot", desc: "BTC/ETH trading", href: "https://www.binance.com/en/trade/BTC_USDT", color: "#F0B90B" },
+                  { label: "Binance Futures", desc: "BTC/ETH perpetuals", href: "https://www.binance.com/en/futures/BTCUSDT", color: "#F0B90B" },
+                  { label: "Uniswap", desc: "EVM DEX liquidity", href: "https://app.uniswap.org", color: "#FF007A" },
+                  { label: "Aave", desc: "BTC/ETH lending markets", href: "https://app.aave.com", color: "#B6509E" },
+                  { label: "DefiLlama DEX", desc: "Top DEX volumes", href: "https://defillama.com/dexs", color: "#2172e5" },
+                  { label: "DefiLlama Fees", desc: "Protocol fee revenue", href: "https://defillama.com/fees", color: "#2172e5" },
+                ]
+              },
+              {
+                category: "On-Chain Explorers",
+                links: [
+                  { label: "Etherscan", desc: "Ethereum explorer", href: "https://etherscan.io", color: "#3498db" },
+                  { label: "Solscan", desc: "Solana explorer", href: "https://solscan.io", color: "#9945ff" },
+                  { label: "Nansen", desc: "Smart money tracker", href: "https://app.nansen.ai", color: "#f97316" },
+                  { label: "BTC Explorer", desc: "Bitcoin explorer", href: "https://mempool.space", color: "#F7931A" },
+                  { label: "Dune BTC/ETH", desc: "Custom BTC/ETH dashboards", href: "https://dune.com/browse/dashboards?q=btc+eth", color: "#e67bf0" },
+                ]
+              }
+            ].map((group) => (
+              <div key={group.category} className="space-y-2">
+                <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">{group.category}</p>
+                <div className="space-y-1">
+                  {group.links.map((link) => (
+                    <a
+                      key={link.label}
+                      href={link.href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-start gap-2.5 rounded-lg px-2.5 py-2 transition-colors hover:bg-white/5"
+                    >
+                      <span className="mt-0.5 h-2 w-2 shrink-0 rounded-full" style={{ background: link.color }} />
+                      <div>
+                        <p className="text-sm font-medium leading-none" style={{ color: link.color }}>{link.label}</p>
+                        <p className="mt-0.5 text-[11px] text-muted-foreground">{link.desc}</p>
+                      </div>
+                    </a>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+        </CardContent>
+      </Card>
 
     </div>
   );

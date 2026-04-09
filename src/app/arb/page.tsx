@@ -3,6 +3,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { DataSources } from "@/components/ui/data-sources";
 import { formatUsd } from "@/lib/utils";
 import { TrendingUp, TrendingDown, Zap, BarChart2, Coins } from "lucide-react";
 
@@ -56,7 +57,10 @@ export default function ArbPage() {
   return (
     <div className="space-y-6">
       <div className="flex items-center gap-3 flex-wrap">
-        <h1 className="text-2xl font-semibold">Arbitrage Scanner</h1>
+        <div>
+          <h1 className="text-2xl font-semibold">Arbitrage Scanner</h1>
+          <DataSources sources={["binance", "binancePerp", "coinglass", "defillamaYields", "aave", "uniswap"]} />
+        </div>
         {isLoading && <Badge className="animate-pulse text-xs">Loading...</Badge>}
         {lastUpdated && <span className="text-xs text-muted-foreground ml-auto">Updated {lastUpdated}</span>}
       </div>

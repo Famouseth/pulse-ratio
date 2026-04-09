@@ -55,7 +55,7 @@ export async function GET() {
       const volumeUsd1d = typeof p.volumeUsd1d === "number" ? p.volumeUsd1d : 0;
 
       const asset = inferAsset(symbol);
-      if (asset === "OTHER" || tvlUsd < 10_000 || !pool || !chain) continue;
+      if (asset === "OTHER" || tvlUsd < 500_000 || !pool || !chain) continue;
 
       if (AAVE_PROJECTS.includes(project)) {
         if (asset === "BTC") aaveBtcTvl += tvlUsd;

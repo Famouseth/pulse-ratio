@@ -7,6 +7,7 @@ import { useTvlData } from "@/hooks/use-tvl-data";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { DataSources } from "@/components/ui/data-sources";
 import { formatUsd } from "@/lib/utils";
 
 function toCsv(rows: Array<Record<string, string | number>>) {
@@ -46,7 +47,10 @@ export default function TvlAnalyticsPage() {
     <div className="space-y-6">
       {/* Header */}
       <div className="flex flex-wrap items-center gap-3">
-        <h1 className="text-2xl font-semibold">TVL Analytics</h1>
+        <div>
+          <h1 className="text-2xl font-semibold">TVL Analytics</h1>
+          <DataSources sources={["defillamaChains", "defillamaYields", "aave", "defillama"]} />
+        </div>
         {isFetching && <Badge variant="default" className="text-xs animate-pulse">Refreshing...</Badge>}
         <div className="ml-auto flex gap-2">
           <Button variant="outline" size="sm" onClick={exportCsv}><Download className="mr-2 h-4 w-4" />CSV</Button>
@@ -58,28 +62,28 @@ export default function TvlAnalyticsPage() {
         <Card className="border-eth/30">
           <CardHeader className="pb-2"><CardTitle className="text-sm text-muted-foreground">Ethereum Chain TVL</CardTitle></CardHeader>
           <CardContent>
-            <p className="text-2xl font-semibold text-eth">{formatUsd(totals?.ethChainTvl ?? 0, 1)}</p>
+            {totals ? <p className="text-2xl font-semibold text-eth">{formatUsd(totals.ethChainTvl, 1)}</p> : <div className="h-8 w-28 animate-pulse rounded bg-white/5" />}
             <p className="text-xs text-muted-foreground mt-1">ETH DeFi ecosystem total</p>
           </CardContent>
         </Card>
         <Card className="border-btc/30">
           <CardHeader className="pb-2"><CardTitle className="text-sm text-muted-foreground">BTC in DeFi (All Chains)</CardTitle></CardHeader>
           <CardContent>
-            <p className="text-2xl font-semibold text-btc">{formatUsd(totals?.btcTotal ?? 0, 1)}</p>
+            {totals ? <p className="text-2xl font-semibold text-btc">{formatUsd(totals.btcTotal, 1)}</p> : <div className="h-8 w-28 animate-pulse rounded bg-white/5" />}
             <p className="text-xs text-muted-foreground mt-1">wBTC, tBTC, solvBTC pools</p>
           </CardContent>
         </Card>
         <Card>
           <CardHeader className="pb-2"><CardTitle className="text-sm text-muted-foreground">ETH in DeFi (Pools)</CardTitle></CardHeader>
           <CardContent>
-            <p className="text-2xl font-semibold">{formatUsd(totals?.ethTotal ?? 0, 1)}</p>
+            {totals ? <p className="text-2xl font-semibold">{formatUsd(totals.ethTotal, 1)}</p> : <div className="h-8 w-28 animate-pulse rounded bg-white/5" />}
             <p className="text-xs text-muted-foreground mt-1">stETH, rETH, wETH pools</p>
           </CardContent>
         </Card>
         <Card>
           <CardHeader className="pb-2"><CardTitle className="text-sm text-muted-foreground">Total DeFi TVL</CardTitle></CardHeader>
           <CardContent>
-            <p className="text-2xl font-semibold">{formatUsd(totalDeFi, 1)}</p>
+            {totals ? <p className="text-2xl font-semibold">{formatUsd(totalDeFi, 1)}</p> : <div className="h-8 w-28 animate-pulse rounded bg-white/5" />}
             <p className="text-xs text-muted-foreground mt-1">All chains combined</p>
           </CardContent>
         </Card>

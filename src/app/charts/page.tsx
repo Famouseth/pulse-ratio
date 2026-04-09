@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { TradingViewWidget } from "@/components/charts/tradingview-widget";
 import { RefreshBadge } from "@/components/ui/refresh-badge";
+import { DataSources } from "@/components/ui/data-sources";
 import { useMarketData } from "@/hooks/use-market-data";
 import { useTvlData } from "@/hooks/use-tvl-data";
 import { useDefiOverview } from "@/hooks/use-defi-overview";
@@ -64,7 +65,10 @@ export default function ChartsPage() {
   return (
     <div className="space-y-5">
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <h1 className="text-2xl font-semibold">Charts</h1>
+        <div>
+          <h1 className="text-2xl font-semibold">Charts</h1>
+          <DataSources sources={["tradingview", "coingecko", "defillama", "defillamaDex", "binance"]} />
+        </div>
         <RefreshBadge
           lastUpdated={marketUpdated || defiUpdated}
           onRefresh={() => { refetchMarket(); refetchDefi(); }}
