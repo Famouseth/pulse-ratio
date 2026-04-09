@@ -123,7 +123,7 @@ export default function ChartsPage() {
 
           {/* Full TradingView chart with RSI, MACD, Volume */}
           <Card className="overflow-hidden border-white/5">
-            <div className="min-h-[520px] h-[calc(100vh-300px)] max-h-[900px] w-full">
+            <div className="min-h-[780px] h-[calc(100vh-200px)] max-h-[1350px] w-full">
               <TradingViewWidget
                 symbol={symbol}
                 interval={interval}

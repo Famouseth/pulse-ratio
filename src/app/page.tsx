@@ -97,7 +97,7 @@ export default function DashboardPage() {
           <CardHeader className="pb-0 shrink-0">
             <CardTitle className="text-sm text-muted-foreground">ETH / BTC Price Ratio - TradingView (BINANCE:ETHBTC)</CardTitle>
           </CardHeader>
-          <div className="min-h-[420px] h-[55vh] max-h-[680px] w-full grow">
+          <div className="min-h-[630px] h-[82vh] max-h-[1020px] w-full grow">
             <TradingViewWidget
               symbol="BINANCE:ETHBTC"
               interval="60"
