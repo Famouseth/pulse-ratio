@@ -30,7 +30,7 @@ export async function GET() {
     const filtered = parsed
       .filter((c) => c.tvl > 1_000_000)
       .sort((a, b) => b.tvl - a.tvl)
-      .slice(0, 25)
+      .slice(0, 40)
       .map((c) => ({
         name: c.name,
         tvl: c.tvl,

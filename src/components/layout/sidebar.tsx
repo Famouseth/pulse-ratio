@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Activity, CandlestickChart, Gem, LayoutDashboard, Scale, Search, Wallet, BarChartBig } from "lucide-react";
+import { Activity, CandlestickChart, Gem, LayoutDashboard, Scale, Search, Wallet, BarChartBig, Zap } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const navItems = [
@@ -13,7 +13,8 @@ const navItems = [
   { href: "/charts", label: "Charts", icon: CandlestickChart },
   { href: "/arb", label: "Arbitrage", icon: Scale },
   { href: "/portfolio", label: "Wallet Tracker", icon: Wallet },
-  { href: "/stats", label: "Stats", icon: Activity }
+  { href: "/stats", label: "Stats", icon: Activity },
+  { href: "/pulsechain", label: "PulseChain", icon: Zap, pulse: true },
 ];
 
 export function Sidebar() {
@@ -29,17 +30,29 @@ export function Sidebar() {
         {navItems.map((item) => {
           const Icon = item.icon;
           const active = pathname === item.href;
+          const isPulse = "pulse" in item && item.pulse;
           return (
             <Link
               key={item.href}
               href={item.href as string}
               className={cn(
                 "flex items-center gap-3 rounded-xl px-3 py-2 text-sm transition-colors",
-                active ? "bg-primary/20 text-primary" : "text-muted-foreground hover:bg-white/5 hover:text-foreground"
+                active
+                  ? isPulse
+                    ? "bg-[#9333ea]/20 text-[#9333ea]"
+                    : "bg-primary/20 text-primary"
+                  : isPulse
+                    ? "text-[#9333ea]/70 hover:bg-[#9333ea]/10 hover:text-[#9333ea]"
+                    : "text-muted-foreground hover:bg-white/5 hover:text-foreground"
               )}
             >
               <Icon className="h-4 w-4" />
               {item.label}
+              {isPulse && !active && (
+                <span className="ml-auto text-[9px] font-bold tracking-widest rounded-full px-1.5 py-0.5 bg-[#9333ea]/20 text-[#9333ea]">
+                  PLS
+                </span>
+              )}
             </Link>
           );
         })}

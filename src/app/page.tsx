@@ -13,6 +13,7 @@ import { TradingViewWidget } from "@/components/charts/tradingview-widget";
 import { RefreshBadge } from "@/components/ui/refresh-badge";
 import { DataSources } from "@/components/ui/data-sources";
 import { formatUsd } from "@/lib/utils";
+import { usePulsechain } from "@/hooks/use-pulsechain";
 
 function CorrelationRow({
   label,
@@ -55,6 +56,7 @@ export default function DashboardPage() {
   const { totals, chains, isFetching: tvlFetching } = useTvlData();
   const { topYields } = useOpportunities();
   const { globalMarket, defiOverview, isFetching: defiFetching, dataUpdatedAt: defiUpdated, refetch: refetchDefi } = useDefiOverview();
+  const { data: pulseData } = usePulsechain();
   const ratioHistory = useAppStore((s) => s.ratioHistory);
   void ratioHistory; // kept for Binance WS side-effect (pushes ratio to store)
 
@@ -66,7 +68,7 @@ export default function DashboardPage() {
       <div className="flex items-center justify-between flex-wrap gap-2">
         <div>
           <h1 className="text-xl font-semibold text-muted-foreground">Live Dashboard</h1>
-          <DataSources sources={["binance", "coingecko", "defillama", "defillamaYields", "feargreed", "tradingview"]} />
+          <DataSources sources={["binance", "coingecko", "defillama", "defillamaYields", "feargreed", "tradingview", "pulsechain", "omnibridge"]} />
         </div>
         <RefreshBadge
           lastUpdated={marketUpdated || defiUpdated}
@@ -89,6 +91,31 @@ export default function DashboardPage() {
         <MetricCard title="ETH Dominance" value={globalMarket?.ethDominance ?? 0} delta={0} tone="eth" format={(v) => `${v.toFixed(1)}%`} />
         <MetricCard title="ETH Chain TVL" value={totals?.ethChainTvl ?? 0} delta={0} tone="eth" />
         <MetricCard title="DEX Volume 24h" value={defiOverview?.dexVolume24h ?? 0} delta={0} />
+      </motion.section>
+
+      {/* Row 3: PulseChain metrics */}
+      <motion.section initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.14 }} className="grid gap-4 md:grid-cols-4">
+        <MetricCard
+          title="PulseChain TVL"
+          value={pulseData?.plsTvl ?? 0}
+          delta={pulseData?.plsChange1d ?? 0}
+          format={(v) => formatUsd(v, 2)}
+        />
+        <MetricCard
+          title="PLS Price"
+          value={pulseData?.plsPrice ?? 0}
+          format={(v) => v > 0 ? `$${v.toFixed(6)}` : "—"}
+        />
+        <MetricCard
+          title="PulseChain 7d Change"
+          value={pulseData?.plsChange7d ?? 0}
+          format={(v) => `${v >= 0 ? "+" : ""}${v.toFixed(2)}%`}
+        />
+        <MetricCard
+          title="PulseChain Block"
+          value={pulseData?.latestBlock ?? 0}
+          format={(v) => v > 0 ? `#${v.toLocaleString()}` : "—"}
+        />
       </motion.section>
 
       {/* Row 2: TradingView full chart + TVL gauge */}

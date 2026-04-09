@@ -28,6 +28,14 @@ export function TopBar() {
           <Button variant={chainScope === "all" ? "default" : "outline"} size="sm" onClick={() => setChainScope("all")}>All</Button>
           <Button variant={chainScope === "evm" ? "default" : "outline"} size="sm" onClick={() => setChainScope("evm")}>EVM</Button>
           <Button variant={chainScope === "solana" ? "default" : "outline"} size="sm" onClick={() => setChainScope("solana")}>Solana</Button>
+          <Button
+            variant={chainScope === "pulse" ? "default" : "outline"}
+            size="sm"
+            onClick={() => setChainScope("pulse")}
+            className={chainScope === "pulse" ? "bg-[#9333ea] hover:bg-[#9333ea]/90 border-[#9333ea]" : "border-[#9333ea]/30 text-[#9333ea]/80 hover:border-[#9333ea]/60 hover:text-[#9333ea]"}
+          >
+            Pulse
+          </Button>
         </div>
       </div>
     </header>

@@ -1,4 +1,4 @@
-export type ChainScope = "all" | "evm" | "solana";
+export type ChainScope = "all" | "evm" | "solana" | "pulse";
 
 export interface MarketSnapshot {
   symbol: "BTC" | "ETH";

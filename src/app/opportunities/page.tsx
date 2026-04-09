@@ -64,7 +64,7 @@ const CHIP_COLORS: Record<FilterChip["kind"], string> = {
 };
 
 // ── Top chains to show as quick-pick buttons ────────────────────────────────
-const QUICK_CHAINS = ["Ethereum", "Base", "Solana", "Arbitrum", "BSC", "Polygon", "Optimism", "Avalanche"];
+const QUICK_CHAINS = ["Ethereum", "Base", "Solana", "Arbitrum", "BSC", "Polygon", "Optimism", "Avalanche", "Pulse"];
 
 export default function OpportunitiesPage() {
   const uid = useId();
@@ -157,7 +157,7 @@ export default function OpportunitiesPage() {
       {/* Title */}
       <div>
         <h1 className="text-2xl font-semibold">All-Protocol LP &amp; Lending Opportunities</h1>
-        <DataSources sources={["defillamaYields", "aave", "uniswap", "defillama"]} />
+        <DataSources sources={["defillamaYields", "aave", "uniswap", "defillama", "pulsechain", "pulsex"]} />
       </div>
 
       {/* ── Filter builder panel ─────────────────────────────────────────── */}

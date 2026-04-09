@@ -26,7 +26,8 @@ export function useOpportunities() {
     const data = query.data?.opportunities ?? [];
     if (chainScope === "all") return data;
     if (chainScope === "solana") return data.filter((item) => item.chain.toLowerCase().includes("sol"));
-    return data.filter((item) => !item.chain.toLowerCase().includes("sol"));
+    if (chainScope === "pulse") return data.filter((item) => item.chain.toLowerCase() === "pulse");
+    return data.filter((item) => !item.chain.toLowerCase().includes("sol") && item.chain.toLowerCase() !== "pulse");
   }, [chainScope, query.data]);
 
   const topYields = useMemo(

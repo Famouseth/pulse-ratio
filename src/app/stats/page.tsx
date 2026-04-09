@@ -13,6 +13,7 @@ import { useMarketData } from "@/hooks/use-market-data";
 import { useTvlData } from "@/hooks/use-tvl-data";
 import { useDefiOverview } from "@/hooks/use-defi-overview";
 import { useFearGreed, fngColor, fngSignal } from "@/hooks/use-fear-greed";
+import { usePulsechain } from "@/hooks/use-pulsechain";
 import { formatUsd } from "@/lib/utils";
 
 // ---- Helpers --------------------------------------------------------
@@ -103,6 +104,7 @@ export default function StatsPage() {
   } = useDefiOverview();
 
   const { data: fng } = useFearGreed();
+  const { data: pulseData } = usePulsechain();
 
   const isLoading = !market && !globalMarket;
 
@@ -283,7 +285,7 @@ export default function StatsPage() {
       {/* Header */}
       <div className="flex flex-wrap items-center justify-between gap-3">
         <h1 className="text-2xl font-semibold">BTC vs ETH Deep Analysis</h1>
-        <DataSources sources={["coingecko", "defillama", "defillamaYields", "binance", "feargreed", "coinglass", "dune", "tokenterminal"]} />
+        <DataSources sources={["coingecko", "defillama", "defillamaYields", "binance", "feargreed", "coinglass", "dune", "tokenterminal", "pulsechain", "omnibridge"]} />
         <RefreshBadge
           lastUpdated={marketUpdated || defiUpdated}
           onRefresh={() => { refetchMarket(); refetchDefi(); }}
@@ -739,6 +741,31 @@ export default function StatsPage() {
                 </div>
               </div>
             ))}
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* PulseChain spotlight */}
+      <Card className="border-[#9333ea]/30 bg-[#9333ea]/5">
+        <CardHeader>
+          <CardTitle className="text-base">PulseChain Spotlight</CardTitle>
+        </CardHeader>
+        <CardContent className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="rounded-xl border border-white/10 bg-black/20 p-3">
+            <p className="text-xs text-muted-foreground">PulseChain TVL</p>
+            <p className="mt-1 text-lg font-semibold text-[#9333ea]">{pulseData ? formatUsd(pulseData.plsTvl, 2) : "—"}</p>
+          </div>
+          <div className="rounded-xl border border-white/10 bg-black/20 p-3">
+            <p className="text-xs text-muted-foreground">PLS Price</p>
+            <p className="mt-1 text-lg font-semibold text-[#9333ea]">{pulseData?.plsPrice ? `$${pulseData.plsPrice.toFixed(6)}` : "—"}</p>
+          </div>
+          <div className="rounded-xl border border-white/10 bg-black/20 p-3">
+            <p className="text-xs text-muted-foreground">OmniBridge 24h Volume</p>
+            <p className="mt-1 text-lg font-semibold text-[#9333ea]">{pulseData ? formatUsd(pulseData.bridge24hVolume, 2) : "—"}</p>
+          </div>
+          <div className="rounded-xl border border-white/10 bg-black/20 p-3">
+            <p className="text-xs text-muted-foreground">Latest Block</p>
+            <p className="mt-1 text-lg font-semibold text-[#9333ea]">{pulseData?.latestBlock ? `#${pulseData.latestBlock.toLocaleString()}` : "—"}</p>
           </div>
         </CardContent>
       </Card>

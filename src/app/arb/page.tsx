@@ -59,7 +59,7 @@ export default function ArbPage() {
       <div className="flex items-center gap-3 flex-wrap">
         <div>
           <h1 className="text-2xl font-semibold">Arbitrage Scanner</h1>
-          <DataSources sources={["binance", "binancePerp", "coinglass", "defillamaYields", "aave", "uniswap"]} />
+          <DataSources sources={["binance", "binancePerp", "coinglass", "defillamaYields", "aave", "uniswap", "pulsechain"]} />
         </div>
         {isLoading && <Badge className="animate-pulse text-xs">Loading...</Badge>}
         {lastUpdated && <span className="text-xs text-muted-foreground ml-auto">Updated {lastUpdated}</span>}

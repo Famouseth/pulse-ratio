@@ -19,7 +19,7 @@ export default function BondingPage() {
         <DataSources sources={["defillamaYields", "aave", "uniswap", "defillama", "tokenterminal"]} />
       </div>
 
-      <BondingCalculator />
+        <DataSources sources={["defillamaYields", "aave", "uniswap", "defillama", "tokenterminal", "pulsechain", "pulsex"]} />
 
       <section className="grid gap-4 lg:grid-cols-2">
         <Card>

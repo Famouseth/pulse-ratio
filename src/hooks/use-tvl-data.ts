@@ -55,6 +55,7 @@ export function useTvlData() {
     const all = chainQuery.data ?? [];
     if (chainScope === "evm") return all.filter((c) => !NON_EVM_CHAINS.has(c.name));
     if (chainScope === "solana") return all.filter((c) => c.name === "Solana");
+    if (chainScope === "pulse") return all.filter((c) => c.name === "Pulse");
     return all;
   }, [chainQuery.data, chainScope]);
 
@@ -71,6 +72,8 @@ export function useTvlData() {
     // Filter pools by chain scope
     const scopedPools = chainScope === "solana"
       ? pools.filter((p) => p.chain.toLowerCase() === "solana")
+      : chainScope === "pulse"
+      ? pools.filter((p) => p.chain.toLowerCase() === "pulse")
       : chainScope === "evm"
       ? pools.filter((p) => !p.chain.toLowerCase().includes("sol"))
       : pools;

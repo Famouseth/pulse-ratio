@@ -67,7 +67,7 @@ export default function ChartsPage() {
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
           <h1 className="text-2xl font-semibold">Charts</h1>
-          <DataSources sources={["tradingview", "coingecko", "defillama", "defillamaDex", "binance"]} />
+          <DataSources sources={["tradingview", "coingecko", "defillama", "defillamaDex", "binance", "pulsechain"]} />
         </div>
         <RefreshBadge
           lastUpdated={marketUpdated || defiUpdated}

@@ -23,6 +23,10 @@ const CATALOGUE = {
   nansen:           { label: "Nansen",              href: "https://app.nansen.ai",                                      color: "#f97316" },
   coinmarketcap:    { label: "CoinMarketCap",       href: "https://coinmarketcap.com",                                  color: "#3861fb" },
   messari:          { label: "Messari",             href: "https://messari.io/asset/bitcoin",                           color: "#06d6a0" },
+  pulsechain:       { label: "PulseChain",          href: "https://pulsechain.com",                                     color: "#9333ea" },
+  pulsex:           { label: "PulseX",              href: "https://app.pulsex.com",                                     color: "#9333ea" },
+  omnibridge:       { label: "OmniBridge",          href: "https://bridge.pulsechain.com",                              color: "#7c3aed" },
+  pulsescan:        { label: "PulseScan",           href: "https://scan.pulsechain.com",                                color: "#8b5cf6" },
 } as const;
 
 export type SourceKey = keyof typeof CATALOGUE;

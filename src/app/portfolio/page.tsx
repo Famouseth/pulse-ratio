@@ -36,7 +36,7 @@ export default function WalletTrackerPage() {
         <DataSources sources={["etherscan", "solscan", "nansen", "dune"]} />
       </div>
 
-      {/* Search bar */}
+        <DataSources sources={["etherscan", "solscan", "pulsescan", "nansen", "dune", "pulsechain"]} />
       <WalletSearchBar loading={loading} onLookup={lookup} />
 
       {/* Error banner */}
