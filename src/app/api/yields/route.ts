@@ -18,6 +18,7 @@ function inferAsset(symbol: string): "BTC" | "ETH" | "OTHER" {
 }
 
 export const revalidate = 900; // 15 min
+export const dynamic = "force-dynamic";
 
 export async function GET() {
   try {
